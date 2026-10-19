@@ -1,41 +1,197 @@
-:root {
-  --bg: #fafaf9;
-  --fg: #1c1917;
-  --muted: #78716c;
-  --line: #e7e5e4;
-  --accent: #ea580c;
-  --up: #15803d;
-  --down: #b91c1c;
-  color-scheme: light dark;
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Marquee & Letterboard: black grooved felt, white push-in letters, amber chase bulbs, one blue neon tube.
+   Dark only: the app lives on a couch or laptop in the evening. shadcn's tokens map onto the same palette. */
+
+@theme inline {
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-heading: var(--font-letters), "Arial Narrow", sans-serif;
+  --font-letters: var(--font-letters), "Arial Narrow", sans-serif;
+
+  --color-felt: var(--felt);
+  --color-felt-2: var(--felt-2);
+  --color-felt-3: var(--felt-3);
+  --color-board: var(--board);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-letter: var(--letter);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+  --color-neon: var(--neon);
+  --color-neon-text: var(--neon-text);
+  --color-bulb: var(--bulb);
+  --color-bulb-off: var(--bulb-off);
+  --color-bulb-ink: var(--bulb-ink);
+  --color-up: var(--up);
+  --color-down: var(--down);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-neon: 0 0 0 1px var(--neon), 0 0 22px -2px rgb(47 116 255 / 0.55), 0 16px 34px -18px rgb(0 0 0 / 0.9);
+  --shadow-neon-lit: 0 0 0 2px var(--neon), 0 0 34px 0 rgb(47 116 255 / 0.55);
+  --shadow-bulb: 0 8px 24px -10px rgb(255 181 52 / 0.7);
+  --text-shadow-emboss: 0 1px 0 #000, 0 2px 3px rgb(0 0 0 / 0.6);
+
+  --animate-slot-in: slot-in 0.45s var(--ease-out-expo);
+  --animate-sweep: sweep 1.4s linear infinite;
+  --animate-chase: chase 0.5s steps(1) 6;
 }
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14120f;
-    --fg: #f5f5f4;
-    --muted: #a8a29e;
-    --line: #292524;
-    --accent: #fb923c;
-    --up: #4ade80;
-    --down: #f87171;
+
+:root {
+  --felt: #121110;
+  --felt-2: #1a1816;
+  --felt-3: #23201d;
+  --board: #0e0d0c;
+  --groove: rgb(255 255 255 / 0.045);
+  --line: #2e2a26;
+  --line-2: #403a34;
+  --letter: #f1ede3;
+  --dim: #aaa398;
+  --faint: #8a847a;
+  --neon: #2f74ff;
+  --neon-text: #7aa8ff;
+  --bulb: #ffb534;
+  --bulb-off: #4a3b22;
+  --bulb-ink: #1a1206;
+  --up: #7fdca0;
+  --down: #ff8f7f;
+
+  --background: var(--felt);
+  --foreground: var(--letter);
+  --card: var(--felt-2);
+  --card-foreground: var(--letter);
+  --popover: var(--felt-2);
+  --popover-foreground: var(--letter);
+  --primary: var(--bulb);
+  --primary-foreground: var(--bulb-ink);
+  --secondary: var(--felt-2);
+  --secondary-foreground: var(--letter);
+  --muted: var(--felt-3);
+  --muted-foreground: var(--dim);
+  --accent: var(--felt-3);
+  --accent-foreground: var(--letter);
+  --destructive: var(--down);
+  --border: var(--line);
+  --input: var(--line-2);
+  --ring: var(--neon);
+  --radius: 0.875rem;
+  color-scheme: dark;
+}
+
+@keyframes slot-in { from { opacity: 0.35; transform: translateY(8px); } }
+@keyframes sweep { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes chase {
+  0%   { background-position: 0 0, 0 0, 0 100%, 0 100%, 0 0; }
+  50%  { background-position: 22px 0, -22px 0, -22px 100%, 22px 100%, 0 0; }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scrollbar-color: var(--line-2) var(--felt); scrollbar-gutter: stable; }
+  body {
+    @apply min-h-dvh bg-background font-sans text-foreground antialiased;
+    font-variant-numeric: tabular-nums;
+    caret-color: var(--bulb);
+  }
+  ::selection { background: var(--neon); color: #fff; }
+  :focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+  b { @apply font-semibold text-letter; }
+}
+
+/* Letterboard surface: black felt with horizontal grooves. Only for things that are letterboards. */
+@utility felt-board {
+  background-color: var(--board);
+  background-image: repeating-linear-gradient(180deg, transparent 0 15px, var(--groove) 15px 16px);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+/* Push-in plastic letters. */
+@utility letters {
+  font-family: var(--font-letters), "Arial Narrow", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* The light sweep that means "still loading". */
+@utility sweep {
+  background-image: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.06) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: var(--animate-sweep);
+}
+
+@layer components {
+  /* Marquee: a letterboard band between two rows of chase bulbs. */
+  .marquee {
+    --on: radial-gradient(circle at 11px 50%, var(--bulb) 0 3.5px, rgb(255 181 52 / 0.25) 4.5px, transparent 7px);
+    --off: radial-gradient(circle at 33px 50%, var(--bulb-off) 0 3.5px, transparent 4.5px);
+    background-color: #0c0b0a;
+    background-image: var(--on), var(--off), var(--on), var(--off),
+      repeating-linear-gradient(180deg, transparent 0 13px, var(--groove) 13px 14px);
+    background-size: 44px 18px, 44px 18px, 44px 18px, 44px 18px, auto;
+    background-repeat: repeat-x, repeat-x, repeat-x, repeat-x, repeat;
+    background-position: 0 0, 0 0, 0 100%, 0 100%, 0 0;
+    box-shadow: inset 0 0 0 1px var(--line), 0 18px 40px -24px rgb(255 181 52 / 0.35);
+    animation: var(--animate-chase);
+  }
+
+  /* Poster frame: slate underneath, sweep while looking, the image fading in on top. */
+  .poster > * { position: absolute; inset: 0; }
+  .poster img { opacity: 0; transform: scale(1.02); transition: opacity 0.45s var(--ease-out-expo), transform 0.6s var(--ease-out-expo); }
+  .poster[data-state="shown"] img { opacity: 1; transform: none; }
+  .poster[data-state="shown"] .slate { opacity: 0; }
+  .poster[data-state="looking"] .slate span, .poster[data-state="loading"] .slate span { opacity: 0.35; }
+  .poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.06) 50%, transparent 70%) 0 0 / 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .poster[data-state="looking"]::after, .poster[data-state="loading"]::after { opacity: 1; animation: var(--animate-sweep); }
+
+  /* The neon tube under the current page. */
+  .tube::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--neon);
+    box-shadow: 0 0 6px 1px rgb(47 116 255 / 0.7), 0 2px 14px rgb(47 116 255 / 0.45);
   }
 }
-* { box-sizing: border-box; margin: 0; }
-body { background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
-nav { display: flex; gap: 1.5rem; padding: 1rem; border-bottom: 1px solid var(--line); }
-nav a { color: var(--fg); text-decoration: none; font-weight: 600; }
-main { max-width: 56rem; margin: 0 auto; padding: 2rem 1rem; display: grid; gap: 1rem; }
-a { color: var(--accent); }
-button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: transparent; color: var(--fg); border-radius: 999px; padding: 0.35rem 0.9rem; }
-button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
-.muted { color: var(--muted); }
-.duel { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.card { border-radius: 12px; padding: 0.75rem; display: grid; gap: 0.5rem; text-align: left; }
-.card:hover, .card:focus-visible { border-color: var(--accent); }
-.card img, .card .blank { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; background: var(--line); }
-.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 0.5rem; border-bottom: 1px solid var(--line); text-align: left; }
-th button { border: 0; padding: 0; font-weight: 600; }
-.up { color: var(--up); }
-.down { color: var(--down); }
-.scroll { overflow-x: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
